@@ -56,10 +56,13 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    "django_extensions",
     'corsheaders',
 
     'accounting.apps.AccountingConfig',
     'contact.apps.ContactConfig',
+
+    
 ]
 
 MIDDLEWARE = [

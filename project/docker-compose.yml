@@ -1,0 +1,40 @@
+
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env  # Загружаем переменные окружения
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend/my-project
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/my-project:/app
+    env_file:
+      - ./frontend/my-project/.env
+    depends_on:
+      - backend
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
