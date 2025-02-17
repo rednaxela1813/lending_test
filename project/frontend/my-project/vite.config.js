@@ -1,15 +1,24 @@
 import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue"; // ✅ Подключаем плагин Vue
+import vue from "@vitejs/plugin-vue";
+import path from "path"; // ✅ Добавляем path для алиасов
 
 export default defineConfig({
-  plugins: [vue()], // ✅ Добавляем плагин Vue
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"), // ✅ Добавляем алиас для корректного импорта "@/"
+    },
+  },
   server: {
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:8000", // ✅ Прокси на бэкенд
+        target: "http://backend:8000",
         changeOrigin: true,
         secure: false,
       },
     },
+  },
+  test: {
+    environment: "jsdom", // ✅ Указываем окружение для Vitest
   },
 });

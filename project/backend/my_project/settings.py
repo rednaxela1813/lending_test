@@ -39,9 +39,9 @@ SECRET_KEY = env("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -102,10 +102,15 @@ WSGI_APPLICATION = "my_project.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("POSTGRES_DB", default="mydatabase"),
+        "USER": env("POSTGRES_USER", default="myuser"),
+        "PASSWORD": env("POSTGRES_PASSWORD", default="mypassword"),
+        "HOST": "db",  # имя контейнера с базой данных
+        "PORT": "5432",
     }
 }
+
 
 
 # Password validation
@@ -142,7 +147,32 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+# Static files settings
+STATIC_URL = "/static/"
+STATIC_ROOT = "/app/staticfiles/"
+
+ # Путь внутри контейнера backend
+
+# Для работы в dev-режиме (если что-то еще нужно)
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "backend", "static"),
+# ]
+
+
+
+# Media files settings
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/app/media/"
+
+
+
+
+
+# Добавь finders, если их нет
+# STATICFILES_FINDERS = [
+#     "django.contrib.staticfiles.finders.FileSystemFinder",
+#     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

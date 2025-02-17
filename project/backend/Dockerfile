@@ -4,17 +4,20 @@ FROM python:3.12
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем только файлы зависимостей (ускоряет сборку при изменении кода)
+# Копируем файлы зависимостей
 COPY requirements.txt ./
 
-# Устанавливаем зависимости
-RUN pip install --no-cache-dir -r requirements.txt
+# Устанавливаем зависимости, включая gunicorn
+RUN pip install --no-cache-dir -r requirements.txt && rm -rf /root/.cache/pip
 
 # Копируем остальной код проекта
 COPY . .
 
+# Собираем статику (важно для работы Nginx)
+RUN python manage.py collectstatic --noinput
+
 # Открываем порт 8000
 EXPOSE 8000
 
-# Запускаем сервер Django (можно заменить на gunicorn для продакшена)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Запускаем Gunicorn с 4 воркерами и логированием
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--access-logfile", "-", "--error-logfile", "-", "my_project.wsgi:application"]

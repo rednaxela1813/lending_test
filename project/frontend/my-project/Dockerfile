@@ -1,5 +1,5 @@
 # Базовый образ для сборки
-FROM node:22.13.1 as builder
+FROM node:22.13.1 AS builder
 
 # Устанавливаем рабочую директорию
 WORKDIR /usr/src/app
@@ -22,11 +22,11 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 ### --- Окружение для разработки ---
-FROM builder as dev
+FROM builder AS dev
 EXPOSE 5173
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
 ### --- Окружение для продакшена ---
-FROM builder as prod
+FROM builder AS prod
 RUN npm run build
 CMD ["npx", "vite", "preview", "--host"]
