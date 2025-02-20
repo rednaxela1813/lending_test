@@ -2,7 +2,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev  # Явно указываем файл Dockerfile
+      dockerfile: Dockerfile.prod  # Явно указываем файл Dockerfile
 
     
     env_file:

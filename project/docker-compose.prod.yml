@@ -2,18 +2,33 @@
 
 services:
   backend:
-    build: ./backend
-    restart: always
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod  # Указываем отдельный Dockerfile для продакшена
     env_file:
-      - backend/.env.prod
-    command: ["gunicorn", "--bind", "0.0.0.0:8000", "my_project.wsgi:application"]
+      - ./backend/.env.prod  # Используем продакшен-окружение
+    ports:
+      - "8000:8000"
     volumes:
-      - ./backend/staticfiles:/app/staticfiles
+      - ./backend/staticfiles:/app/staticfiles  # Для работы статики
+    depends_on:
+      - db
 
   frontend:
-    build: ./frontend/my-project
-    restart: always
-    command: ["npm", "run", "build"]
+    build:
+      context: ./frontend/my-project
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./frontend/my-project/.env.prod  # Продакшен-окружение
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/my-project/dist:/app/frontend/dist
+    environment:
+      DJANGO_ENV: "prod"
+      
+    depends_on:
+      - backend
 
   db:
     image: postgres:15
@@ -36,6 +51,7 @@ services:
       - ./frontend/my-project/dist:/app/frontend/dist
     depends_on:
       - backend
+      - frontend
 
 volumes:
   pgdata:

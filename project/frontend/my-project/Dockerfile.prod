@@ -1,0 +1,24 @@
+# Базовый образ
+FROM node:22.13.1 AS builder
+
+# Устанавливаем рабочую директорию
+WORKDIR /usr/src/app
+
+# Подключаем переменные окружения VITE
+ARG VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+
+# Копируем файлы зависимостей
+COPY package*.json ./
+
+# Устанавливаем зависимости
+RUN npm install --legacy-peer-deps
+
+# Копируем весь код проекта
+COPY . .
+
+# Собираем проект
+RUN npm run build
+
+# Запускаем сервер статики
+CMD ["npx", "vite", "preview", "--host"]

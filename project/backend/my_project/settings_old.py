@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Инициализация переменных окружения
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))  # Читаем .env-файл
+environ.Env.read_env(os.path.join(BASE_DIR, ".env.prod"))  # Читаем .env-файл
 
 
 CORS_ALLOWED_ORIGINS = [

@@ -4,6 +4,8 @@ FROM python:3.12
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
+ENV DJANGO_ENV=prod
+
 # Копируем файлы зависимостей
 COPY requirements.txt ./
 
