@@ -1,34 +1,27 @@
-
-
 services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.prod  # Указываем отдельный Dockerfile для продакшена
+      dockerfile: Dockerfile.prod
     env_file:
-      - ./backend/.env.prod  # Используем продакшен-окружение
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend/staticfiles:/app/staticfiles  # Для работы статики
+      - ./backend/.env.prod
     depends_on:
       - db
+    ports:
+      - "8000:8000"
+    command: ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "my_project.wsgi:application"]
 
   frontend:
     build:
       context: ./frontend/my-project
       dockerfile: Dockerfile.prod
     env_file:
-      - ./frontend/my-project/.env.prod  # Продакшен-окружение
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend/my-project/dist:/app/frontend/dist
-    environment:
-      DJANGO_ENV: "prod"
-      
+      - ./frontend/my-project/.env.prod
     depends_on:
       - backend
+    ports:
+      - "4173:4173"
+    command: ["npx", "vite", "preview", "--host"]
 
   db:
     image: postgres:15
@@ -39,19 +32,31 @@ services:
       POSTGRES_PASSWORD: mypassword
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
 
   nginx:
     image: nginx:latest
-    restart: always
+    container_name: nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./backend/staticfiles:/app/staticfiles
-      - ./frontend/my-project/dist:/app/frontend/dist
+      # Монтируем конфигурацию nginx
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Монтируем сертификаты через volume для «правильного» хранения
+      - nginx_certs:/etc/nginx/ssl:ro
+      - ./backend/staticfiles:/app/staticfiles:ro
     depends_on:
       - backend
-      - frontend
+      - frontend    
 
 volumes:
   pgdata:
+  nginx_certs:
+    driver_opts:
+       type: none
+       o: bind
+       device: ${PWD}/nginx/ssl
+

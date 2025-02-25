@@ -53,6 +53,7 @@ methods: {
 
     if (!response.ok) {
       alert("Ошибка: " + (result.error || "Неизвестная ошибка"));
+      console.log(response.statusText);
       return;
     }
 

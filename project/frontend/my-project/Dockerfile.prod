@@ -6,7 +6,8 @@ WORKDIR /usr/src/app
 
 # Подключаем переменные окружения VITE
 ARG VITE_BACKEND_URL
-ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+#ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=https://localhost
 
 # Копируем файлы зависимостей
 COPY package*.json ./
