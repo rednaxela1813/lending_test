@@ -36,7 +36,7 @@ methods: {
   console.log("VITE_BACKEND_URL:", import.meta.env.VITE_BACKEND_URL);
 
   try {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost";
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "https://167.172.178.153";
     const apiUrl = `${backendUrl}/api/contact/`; // 👈 Теперь API вызывается на правильном URL
 
     const response = await fetch(apiUrl, {

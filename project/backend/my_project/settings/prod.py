@@ -17,8 +17,15 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["my-work.deilmann.sk"])
 
 
 
-CORS_ALLOWED_ORIGINS = ["https://localhost"] # Или порт Vue
+CORS_ALLOWED_ORIGINS = [
+     "https://localhost",
+    "https://167.172.178.153" ] 
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost",
+    "https://my-work.deilmann.sk",
+    "https://167.172.178.153",
+]
 
 # Настройки почты
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
